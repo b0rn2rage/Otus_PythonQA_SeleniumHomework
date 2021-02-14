@@ -1,10 +1,13 @@
 from locators.LoginPage import LoginPage
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 
 def test_loginpage(browser):
     browser.get("https://demo.opencart.com/index.php?route=account/login")
-    browser.find_element(*LoginPage.INPUT_EMAIL)
-    browser.find_element(*LoginPage.INPUT_PASS)
-    browser.find_element(*LoginPage.LOGIN_BUTTON)
-    browser.find_element(*LoginPage.FORGOTTEN_PASSWORD)
-    browser.find_element(*LoginPage.TRANSACTIONS)
+    wait = WebDriverWait(browser, 5)
+    wait.until(EC.visibility_of_element_located(LoginPage.INPUT_EMAIL))
+    wait.until(EC.visibility_of_element_located(LoginPage.INPUT_PASS))
+    wait.until(EC.visibility_of_element_located(LoginPage.LOGIN_BUTTON))
+    wait.until(EC.visibility_of_element_located(LoginPage.FORGOTTEN_PASSWORD))
+    wait.until(EC.visibility_of_element_located(LoginPage.TRANSACTIONS))

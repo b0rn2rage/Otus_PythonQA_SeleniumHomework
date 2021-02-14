@@ -1,10 +1,14 @@
 from locators.AdminPage import AdminPage
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 
 def test_adminpage(browser):
     browser.get("https://demo.opencart.com/admin/")
-    browser.find_element(*AdminPage.INPUT_USERNAME)
-    browser.find_element(*AdminPage.INPUT_PASS)
-    browser.find_element(*AdminPage.LOGIN_BUTTON)
-    browser.find_element(*AdminPage.FORGOTTEN_PASSWORD)
-    browser.find_element(*AdminPage.GO_TO_HOMEPAGE)
+    wait = WebDriverWait(browser, 5)
+    wait.until(EC.visibility_of_element_located(AdminPage.INPUT_USERNAME))
+    wait.until(EC.visibility_of_element_located(AdminPage.INPUT_PASS))
+    wait.until(EC.visibility_of_element_located(AdminPage.LOGIN_BUTTON))
+    wait.until(EC.visibility_of_element_located(AdminPage.FORGOTTEN_PASSWORD))
+    wait.until(EC.visibility_of_element_located(AdminPage.GO_TO_HOMEPAGE))
+
