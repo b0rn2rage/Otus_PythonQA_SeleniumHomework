@@ -2,7 +2,7 @@ from locators.AdminPage import AdminPage
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
-import time
+from selenium.common.exceptions import NoSuchElementException
 
 
 def test_adminpage(browser):
@@ -24,11 +24,13 @@ def test_open_print_shipping_list(browser):
     latest_orders = browser.find_elements(*AdminPage.VIEW_LATEST_ORDERS)
     latest_orders[0].click()  # Перейти в последний заказ
     print_shipping_button = wait.until(EC.visibility_of_element_located(AdminPage.PRINT_SHIPPING_LIST))
+    window_before = browser.window_handles[0]  # Сохранить текущее окно
     print_shipping_button.click()  # Перейти в список доставки по заказу
+    window_after = browser.window_handles[1]  # Сохранить новое окно с открывшейся накладной
+    browser.switch_to.window(window_after)  # Свичнуться на окно с накладной
     try:
-        time.sleep(3)
-        browser.find_element(*AdminPage.CONTAINER)
-        #wait.until(EC.visibility_of_element_located(AdminPage.CONTAINER))  # Проверить что накладная загрузилась
+        wait.until(EC.visibility_of_element_located(AdminPage.CONTAINER))  # Дождаться загрузки страницы
+        wait.until(EC.visibility_of_element_located(AdminPage.DISPATCH_NOTE))  # Проверить что накладная загрузилась
     except TimeoutException:
         raise AssertionError
 
@@ -38,14 +40,17 @@ def test_open_add_new_order_form(browser):
     wait = WebDriverWait(browser, 5)
     login_button = wait.until(EC.visibility_of_element_located(AdminPage.LOGIN_BUTTON))
     login_button.click()
-    wait.until(EC.visibility_of_element_located(AdminPage.LOGOUT_BUTTON))  # Дождаться авторизации
+    wait.until(EC.visibility_of_element_located(AdminPage.LOAD_ADMIN_PAGE))  # Дождаться загрузки страницы
     browser.find_element(*AdminPage.SALES).click()
     wait.until(EC.visibility_of_element_located(AdminPage.SECTIONS_IN_SALES))  # Подождать открытие разделов
     sections_in_sales = browser.find_elements(*AdminPage.SECTIONS_IN_SALES)
     sections_in_sales[0].click()  # Перейти в раздел Orders
     add_new_order = wait.until(EC.visibility_of_element_located(AdminPage.ADD_NEW_ORDER))
     add_new_order.click()  # Добавить новый заказ
-    wait.until(EC.visibility_of_element_located(AdminPage.CUSTOMER_FIELD))  # Поле из формы есть на странице
+    try:
+        wait.until(EC.visibility_of_element_located(AdminPage.CUSTOMER_FIELD))  # Поле customer есть на странице
+    except TimeoutException:
+        raise AssertionError
 
 
 def test_login_logout(browser):
@@ -54,11 +59,35 @@ def test_login_logout(browser):
     login_button = wait.until(EC.visibility_of_element_located(AdminPage.LOGIN_BUTTON))
     login_button.click()
     try:
-        logout_button = wait.until(EC.visibility_of_element_located(AdminPage.LOGOUT_BUTTON))
+        # Дождаться загрузки страницы после авторизации
+        wait.until(EC.visibility_of_element_located(AdminPage.LOAD_ADMIN_PAGE))
+        logout_button = browser.find_element(*AdminPage.LOGOUT_BUTTON)
+    except(TimeoutException, NoSuchElementException):
+        raise AssertionError
+    logout_button.click()  # Сделать logout из админки
+    # После logout'а на странице есть кнопка логина
+    try:
+        wait.until(EC.visibility_of_element_located(AdminPage.LOGIN_BUTTON))
     except TimeoutException:
         raise AssertionError
-    logout_button.click()
-    browser.find_element(*AdminPage.LOGIN_BUTTON)  # После выхода снова отображается кнопка логина
+
+
+def test_open_product_page(browser):
+    browser.get("https://demo.opencart.com/admin/")
+    wait = WebDriverWait(browser, 5)
+    login_button = wait.until(EC.visibility_of_element_located(AdminPage.LOGIN_BUTTON))
+    login_button.click()
+    wait.until(EC.visibility_of_element_located(AdminPage.LOAD_ADMIN_PAGE))  # Дождаться загрузки страницы
+    browser.find_element(*AdminPage.MENU_CATALOG).click()  # Раскрыть меню с каталогом
+    wait.until(EC.element_to_be_clickable(AdminPage.SECTIONS_IN_CATALOG))  # Дождаться раскрытия меню
+    sections_in_catalog = browser.find_elements(*AdminPage.SECTIONS_IN_CATALOG)
+    sections_in_catalog[1].click()  # Перейти в раздел Products
+    wait.until(EC.visibility_of_element_located(AdminPage.LOAD_ADMIN_PAGE))  # Дождаться загрузки страницы
+    try:
+        browser.find_element(*AdminPage.TABLE_WITH_PRODUCT_LIST)
+    except NoSuchElementException:
+        raise AssertionError
+
 
 
 

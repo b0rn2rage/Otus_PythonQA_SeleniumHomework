@@ -14,6 +14,7 @@ def browser(request):
     driver = None
     if browser == "chrome":
         options = webdriver.ChromeOptions()
+        options.headless = True
         driver = webdriver.Chrome(options=options)
         driver.maximize_window()
     elif browser == "firefox":
