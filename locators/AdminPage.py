@@ -20,4 +20,3 @@ class AdminPage:
     MENU_CATALOG = (By.CSS_SELECTOR, "#menu-catalog")
     SECTIONS_IN_CATALOG = (By.CSS_SELECTOR, "#collapse1.collapse>li>a")
     TABLE_WITH_PRODUCT_LIST = (By.CSS_SELECTOR, ".table.table-bordered")
-

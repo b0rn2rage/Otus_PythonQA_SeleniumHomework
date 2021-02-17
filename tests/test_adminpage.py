@@ -32,7 +32,7 @@ def test_open_print_shipping_list(browser):
         wait.until(EC.visibility_of_element_located(AdminPage.CONTAINER))  # Дождаться загрузки страницы
         wait.until(EC.visibility_of_element_located(AdminPage.DISPATCH_NOTE))  # Проверить что накладная загрузилась
     except TimeoutException:
-        raise AssertionError
+        raise AssertionError("Накладная не загрузилась")
 
 
 def test_open_add_new_order_form(browser):
@@ -50,7 +50,7 @@ def test_open_add_new_order_form(browser):
     try:
         wait.until(EC.visibility_of_element_located(AdminPage.CUSTOMER_FIELD))  # Поле customer есть на странице
     except TimeoutException:
-        raise AssertionError
+        raise AssertionError("Форма по добавлению нового заказа не загрузилась либо в ней отсутствует поле customer")
 
 
 def test_login_logout(browser):
@@ -63,13 +63,13 @@ def test_login_logout(browser):
         wait.until(EC.visibility_of_element_located(AdminPage.LOAD_ADMIN_PAGE))
         logout_button = browser.find_element(*AdminPage.LOGOUT_BUTTON)
     except(TimeoutException, NoSuchElementException):
-        raise AssertionError
+        raise AssertionError("Авторизация в админку не удалась")
     logout_button.click()  # Сделать logout из админки
     # После logout'а на странице есть кнопка логина
     try:
         wait.until(EC.visibility_of_element_located(AdminPage.LOGIN_BUTTON))
     except TimeoutException:
-        raise AssertionError
+        raise AssertionError("Сделать Logout из админки не получилось")
 
 
 def test_open_product_page(browser):
@@ -86,8 +86,4 @@ def test_open_product_page(browser):
     try:
         browser.find_element(*AdminPage.TABLE_WITH_PRODUCT_LIST)
     except NoSuchElementException:
-        raise AssertionError
-
-
-
-
+        raise AssertionError("Каталог с продуктами не загрузился")
