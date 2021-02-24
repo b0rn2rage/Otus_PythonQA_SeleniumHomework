@@ -1,5 +1,7 @@
 from selenium import webdriver
 import pytest
+import configparser
+from pathlib import Path
 
 
 def pytest_addoption(parser):
@@ -36,3 +38,10 @@ def browser(request):
 def open_opencart_homepage(request):
     baseurl = request.config.getoption("--baseurl")
     return baseurl
+
+
+@pytest.fixture(scope='session')
+def config():
+    cfg = configparser.ConfigParser()
+    cfg.read(Path(__file__).parent / 'config.ini')
+    return cfg
