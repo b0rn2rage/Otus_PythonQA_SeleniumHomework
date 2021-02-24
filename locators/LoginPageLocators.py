@@ -1,7 +1,7 @@
 from selenium.webdriver.common.by import By
 
 
-class LoginPage:
+class LoginPageLocators:
     INPUT_EMAIL = (By.CSS_SELECTOR, "#input-email")
     INPUT_PASS = (By.CSS_SELECTOR, "#input-password")
     LOGIN_BUTTON = (By.CSS_SELECTOR, "input.btn")

@@ -1,7 +1,7 @@
 from selenium.webdriver.common.by import By
 
 
-class HomePage:
+class HomePageLocators:
     CURRENCY = (By.CSS_SELECTOR, ".fa.fa-caret-down")
     MY_ACCOUNT = (By.CSS_SELECTOR, ".fa.fa-user")
     WISH_LIST = (By.CSS_SELECTOR, "#wishlist-total")
