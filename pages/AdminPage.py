@@ -41,6 +41,7 @@ class AdminPage(BasePage):
             self._wait_element_to_be_presence(AdminPageLocators.Dispatch.CONTAINER)
             self._wait_element_to_be_presence(AdminPageLocators.Dispatch.DISPATCH_NOTE)
         except TimeoutException:
+            self.logger.error("Dispatch is not displayed")
             raise AssertionError("Накладная не загрузилась")
 
     def go_to_sales_orders(self):
@@ -60,6 +61,7 @@ class AdminPage(BasePage):
             self._wait_element_to_be_presence(CommonLocators.WAIT_CONTAINER_LOAD)
             self._wait_element_to_be_presence(AdminPageLocators.NewOrderCard.CUSTOMER_FIELD)
         except TimeoutException:
+            self.logger.error("customer field is not displayed")
             raise AssertionError("Поле customer отсутствует на форме создания нового заказа")
 
     def check_elements_on_admin_page(self):
@@ -80,4 +82,5 @@ class AdminPage(BasePage):
         try:
             self._wait_element_to_be_presence(AdminPageLocators.Catalog.TABLE_WITH_PRODUCT_LIST)
         except TimeoutException:
+            self.logger.error("Page with products not displayed")
             raise AssertionError("Страница с товарами не прогрузилась")

@@ -1,7 +1,11 @@
 from selenium import webdriver
 import pytest
+import logging
 import configparser
 from pathlib import Path
+
+logging.basicConfig(level=logging.INFO, filename="../selenium.log")
+logger = logging.getLogger(__name__)
 
 
 def pytest_addoption(parser):
@@ -12,8 +16,10 @@ def pytest_addoption(parser):
 @pytest.fixture()
 def browser(request):
     browser = request.config.getoption("--browser")
-
+    test_name = request.node.name
     driver = None
+    logger.info(f"Run browser {browser}")
+    logger.info(f"Run test {test_name}")
     if browser == "chrome":
         options = webdriver.ChromeOptions()
         options.headless = True
@@ -31,6 +37,7 @@ def browser(request):
         driver.maximize_window()
 
     yield driver
+    logger.info(f"Browser {browser} close")
     driver.quit()
 
 
@@ -44,4 +51,5 @@ def open_opencart_homepage(request):
 def config():
     cfg = configparser.ConfigParser()
     cfg.read(Path(__file__).parent / 'config.ini')
+    logger.info(f"Read config from {Path(__file__).parent / 'config.ini'}")
     return cfg
