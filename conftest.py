@@ -11,6 +11,7 @@ logger = logging.getLogger(__name__)
 def pytest_addoption(parser):
     parser.addoption("--browser", choices=["chrome", "firefox", "ie"], help="Choose browser")
     parser.addoption("--baseurl", default="https://demo.opencart.com/")
+    parser.addoption("--executor", action="store", default="localhost")
 
 
 @pytest.fixture()
@@ -39,6 +40,17 @@ def browser(request):
     yield driver
     logger.info(f"Browser {browser} close")
     driver.quit()
+
+
+@pytest.fixture()
+def remote(request):
+    browser = request.config.getoption("--browser")
+    executor = request.config.getoption("--executor")
+    wd = webdriver.Remote(command_executor=f"http://{executor}:4444/wd/hub",
+                          desired_capabilities={"browserName": browser})
+    wd.maximize_window()
+    yield wd
+    wd.quit()
 
 
 @pytest.fixture()
