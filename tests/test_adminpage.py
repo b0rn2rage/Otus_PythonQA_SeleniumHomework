@@ -1,14 +1,18 @@
+import allure
+
 from pages.AdminPage import AdminPage
 
 
-def test_adminpage(browser):
-    admin_page = AdminPage(browser)
+@allure.title("Проверка элементов на странице администратора")
+def test_adminpage(remote):
+    admin_page = AdminPage(remote)
     admin_page.open_admin_page()
     admin_page.check_elements_on_admin_page()
 
 
-def test_open_print_shipping_list(browser, config):
-    admin_page = AdminPage(browser)
+@allure.title("Проверка наличия накладной на товар")
+def test_open_print_shipping_list(remote, config):
+    admin_page = AdminPage(remote)
     admin_page.open_admin_page()
     admin_page.login_to_admin_page(username=config['admin-auth']['username'], password=config['admin-auth']['password'])
     admin_page.go_to_the_last_order_card()
@@ -16,8 +20,9 @@ def test_open_print_shipping_list(browser, config):
     admin_page.check_dispatch()
 
 
-def test_open_add_new_order_form(browser, config):
-    admin_page = AdminPage(browser)
+@allure.title("Открытие формы для создания нового заказа")
+def test_open_add_new_order_form(remote, config):
+    admin_page = AdminPage(remote)
     admin_page.open_admin_page()
     admin_page.login_to_admin_page(username=config['admin-auth']['username'], password=config['admin-auth']['password'])
     admin_page.go_to_sales_orders()
@@ -25,13 +30,15 @@ def test_open_add_new_order_form(browser, config):
     admin_page.check_new_order_form()
 
 
-def test_login_logout(browser, config):
-    admin_page = AdminPage(browser)
+@allure.title("Логин/логаут со страницы администратора")
+def test_login_logout(remote, config):
+    admin_page = AdminPage(remote)
     admin_page.open_admin_page()
     admin_page.login_to_admin_page(username=config['admin-auth']['username'], password=config['admin-auth']['password'])
     admin_page.logout_from_admin_page()
 
 
+@allure.title("Открытие страницы товаров")
 def test_open_product_page(browser, config):
     admin_page = AdminPage(browser)
     admin_page.open_admin_page()
